@@ -1,9 +1,18 @@
+
+package main;
+import interfaces.LifeForm;
 import java.io.*;
 import java.util.*;
+import model.Omnivore;
+
+
+//note I have refactored creature to implement the LifeForm interface
+
 
 public class World {
     // List of all creatures currently in the world
-    private List<Creature> creatures;
+    //-Dev TF- I think you hadnt gotten a chance to use your interface yet so refactoring some of this will help
+    private List<LifeForm> creatures;
 
     // List of possible names to assign to new creatures
     private List<String> namePool;
@@ -12,19 +21,28 @@ public class World {
     public World() {
         creatures = new ArrayList<>();
         namePool = new ArrayList<>();
-        loadNames("names.txt");
+        loadNames("src/data/names.txt");
     }
 
-    // Load names from a file into the name pool
+
+    //dev TF - I had to stackoverflow this, otherwise vs will freak out about data being in its own package
     private void loadNames(String filename) {
-        try (Scanner fileScanner = new Scanner(new File(filename))) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("data/names.txt")) {
+            if (input == null) {
+                System.out.println("Could not find names.txt in classpath.");
+                return;
+            }
+            Scanner fileScanner = new Scanner(input);
             while (fileScanner.hasNextLine()) {
                 namePool.add(fileScanner.nextLine());
             }
-        } catch (IOException e) {
+            fileScanner.close();
+            System.out.println("Loaded " + namePool.size() + " names.");
+        } catch (Exception e) {
             System.out.println("Error loading names: " + e.getMessage());
         }
     }
+    
 
     // Create a new creature with a random name from the name pool
     public void createCreature() {
@@ -32,7 +50,9 @@ public class World {
             String name = namePool.get((int)(Math.random() * namePool.size()));
             double chanceToDie = 0.1;
             double chanceToReproduce = 0.3;
-            Creature newCreature = new Creature(name, chanceToDie, chanceToReproduce);
+
+            LifeForm newCreature = new Omnivore(name, chanceToDie, chanceToReproduce);
+
             creatures.add(newCreature);
             System.out.println("Created creature: " + name);
         }
@@ -50,16 +70,16 @@ public class World {
             spawnFood();
 
             // Track new creatures born
-            List<Creature> newCreatures = new ArrayList<>();
-            Iterator<Creature> it = creatures.iterator();
+            List<LifeForm> newCreatures = new ArrayList<>();
+            Iterator<LifeForm> it = creatures.iterator();
 
             // Iterate through each creature's survival and reproduction
             while (it.hasNext()) {
-                Creature c = it.next();
+                LifeForm c = it.next();
                 if (c.isAlive()) {
                     c.maybeDie();
                     if (c.isAlive()) {
-                        Creature offspring = c.reproduce();
+                        LifeForm offspring = c.reproduce();
                         if (offspring != null) {
                             newCreatures.add(offspring);
                         }
