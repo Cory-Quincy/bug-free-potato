@@ -63,9 +63,9 @@ public class World {
 
     // Placeholder for spawning food in the world
     public long spawnFood() {
-        long foodToSpawn = Math.round(Math.random() * (creatures.size())); //Food is spawned in proportion to the number of creatures
+        long foodToSpawn = Math.round(Math.random() * 5 * (creatures.size())); //Food is spawned in proportion to the number of creatures
         foodCount += foodToSpawn;
-        System.out.println(Long.toString(foodToSpawn) + " food has spawned in the world.");
+        System.out.println(Long.toString(foodToSpawn) + " food has spawned in the world. Total food: " + Integer.toString(foodCount));
         return foodToSpawn;
     }
 
