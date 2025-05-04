@@ -8,7 +8,7 @@ public interface LifeForm {
     String getName();
 
     // Marks the life form as dead
-    void die();
+    void die(String deathMessage);
 
     // Atemps to create a new life form
     LifeForm reproduce();
@@ -21,5 +21,12 @@ public interface LifeForm {
     //stub for fighting - not yet implemented
     void fighting(LifeForm lifeForm);
 
-    void maybeDie();
+    //
+    void maybeDie(String deathMessage);
+
+    //
+    int getHunger();
+
+    //
+    void changeHunger(int change);
 }

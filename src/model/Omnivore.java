@@ -5,11 +5,9 @@ import interfaces.LifeForm;
 //stub for omnivore class - not yet implemented
 public class Omnivore extends Creature {
 
-    public Omnivore(String name, double chanceToDie, double chanceToReproduce) {
-        super(name, chanceToDie, chanceToReproduce);
+    public Omnivore(String name, double chanceToDie, double chanceToReproduce, int hunger) {
+        super(name, chanceToDie, chanceToReproduce, hunger);
     }
-
-
 
     @Override
     // Returns the chance of reproducing
@@ -17,7 +15,7 @@ public class Omnivore extends Creature {
         if (Math.random() < chanceToReproduce) {
             String childName = name + " Jr.";
             System.out.println(name + " reproduce and created " + childName);
-            return new Omnivore(childName, chanceToDie, chanceToReproduce);
+            return new Omnivore(childName, chanceToDie, chanceToReproduce, hunger);
         }
         return null;
     }
@@ -28,7 +26,7 @@ public class Omnivore extends Creature {
     public void eating(LifeForm lifeForm) {
         if (lifeForm.isAlive()) {
             System.out.println(name + " eats " + lifeForm.getName() + ".");
-            maybeDie();
+            maybeDie("being eaten.");
         } else {
             System.out.println(name + " cannot eat, " + name + " is dead. ");
         }
@@ -39,7 +37,4 @@ public class Omnivore extends Creature {
         System.out.println(name + " is fighting " + lifeForm.getName() + ".");
         //health -= 10; // -stub- Decrease health by 10 for fighting
     }
-
-
-    
 }
