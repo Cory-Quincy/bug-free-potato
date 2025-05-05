@@ -1,9 +1,9 @@
-
 package main;
 import interfaces.LifeForm;
 import java.io.*;
 import java.util.*;
 import model.Omnivore;
+import model.StatsTracker;
 
 
 //note I have refactored creature to implement the LifeForm interface
@@ -19,12 +19,17 @@ public class World {
 
     private int foodCount;
 
+    // Stats tracker for the world
+    private StatsTracker stats;
+
+
     // Constructor initializes the world with an empty list of creatures
     public World() {
         creatures = new ArrayList<>();
         namePool = new ArrayList<>();
         foodCount = 25;
         loadNames("src/data/names.txt");
+        stats = new StatsTracker();
     }
 
 
@@ -84,7 +89,9 @@ public class World {
             // Iterate through each creature's survival and reproduction
             while (it.hasNext()) {
                 LifeForm c = it.next();
-                if (c.isAlive()) {
+                boolean startsAlive = c.isAlive();
+
+                if (startsAlive) {
                     c.changeHunger(-3);
                     c.maybeDie("natural causes");
 
@@ -108,17 +115,20 @@ public class World {
                         if (offspring != null) {
                             c.changeHunger(-5);
                             newCreatures.add(offspring);
+                            stats.recordBirth();
                         }
                     }
                     
+                    if (startsAlive && !c.isAlive()) {
+                        stats.recordDeath();
+                    }
                 }
             }
 
             // Add any new creatures to the population
             creatures.addAll(newCreatures);
 
-            // Display current population size
-            System.out.println("Current population: " + creatures.size());
+            stats.printStepSummary(step, creatures.size());
         }
     }
 }
