@@ -1,24 +1,19 @@
 package main;
 
 //Dev TF- note: this could be refactored to be an entry exit point for running the sim
-
-
-
 public class Main {
-    public static void main(String[] args) {
+	public static void main(String[] args) {
+		// Create a new simulation world
+		World world = new World();
 
+		// Populate the world with 5 creatures
+		for (int i = 0; i < 5; i++) {
+			world.createCreature();
+		}
 
-        // Create a new simulation world
-        World world = new World();
-
-        // Populate the world with 5 creatures
-        for (int i = 0; i < 5; i++) {
-            world.createCreature();
-        }
-    
-        // Run the simulation for 10 steps
-        world.runSimulation(10);
-    }
+		// Run the simulation for 10 steps
+		world.runSimulation(10);
+	}
 }
 
 /*
@@ -43,14 +38,3 @@ Preserved:
 
 Intended as a structural baseline. Ready for pull request if team agrees this aligns with our original plan.
 */
-
-/*
-git commit -m "Refactored Creature into abstract class; added Omnivore subclass" `
--m "- Updated LifeForm interface with getName()" `
--m "- World now instantiates Omnivore instead of abstract Creature" `
--m "- Fixed names.txt loading via classpath InputStream" `
--m "- Verified reproduction/death logic and name pool load (4945 entries)" `
--m "- Simulation output format preserved"
-     
-*/
-
