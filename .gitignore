@@ -26,3 +26,6 @@ replay_pid*
 # build dirs
 /out
 /bin
+
+# macOS desktop services store
+.DS_Store
