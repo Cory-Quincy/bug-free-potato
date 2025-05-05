@@ -17,10 +17,13 @@ public class World {
     // List of possible names to assign to new creatures
     private List<String> namePool;
 
+    private int foodCount;
+
     // Constructor initializes the world with an empty list of creatures
     public World() {
         creatures = new ArrayList<>();
         namePool = new ArrayList<>();
+        foodCount = 25;
         loadNames("src/data/names.txt");
     }
 
@@ -50,8 +53,8 @@ public class World {
             String name = namePool.get((int)(Math.random() * namePool.size()));
             double chanceToDie = 0.1;
             double chanceToReproduce = 0.3;
-
-            LifeForm newCreature = new Omnivore(name, chanceToDie, chanceToReproduce);
+            int hunger = 10;
+            LifeForm newCreature = new Omnivore(name, chanceToDie, chanceToReproduce, hunger);
 
             creatures.add(newCreature);
             System.out.println("Created creature: " + name);
@@ -59,28 +62,51 @@ public class World {
     }
 
     // Placeholder for spawning food in the world
-    public void spawnFood() {
-        System.out.println("Food has spawned in the world.");
+    public long spawnFood() {
+        long foodToSpawn = Math.round(Math.random() * 5 * (creatures.size())); //Food is spawned in proportion to the number of creatures
+        foodCount += foodToSpawn;
+        System.out.println(Long.toString(foodToSpawn) + " food has spawned in the world. Total food: " + Integer.toString(foodCount));
+        return foodToSpawn;
     }
 
     // Runs the simulation for a specified number of steps
     public void runSimulation(int steps) {
         for (int step = 1; step <= steps; step++) {
             System.out.println("\n--- Step " + step + " ---");
-            spawnFood();
+            
 
             // Track new creatures born
             List<LifeForm> newCreatures = new ArrayList<>();
             Iterator<LifeForm> it = creatures.iterator();
 
+            spawnFood();
+
             // Iterate through each creature's survival and reproduction
             while (it.hasNext()) {
                 LifeForm c = it.next();
                 if (c.isAlive()) {
-                    c.maybeDie();
+                    c.changeHunger(-3);
+                    c.maybeDie("natural causes");
+
+                    if(c.getHunger() < 1)
+                        c.maybeDie("starvation");
+                    
+
+                    if (Math.random() < 0.7){ // Deciding whether the creature eats or not
+                        int foodToEat = (int) Math.round(Math.random() * 10); //Creature eats 1-10 food and gains 1-10 hunger.
+                        if (foodToEat <= foodCount){
+                            c.changeHunger(foodToEat);
+                            foodCount -= foodToEat;
+                            System.out.println(c.getName() + " ate " + Integer.toString(foodToEat) + " food.");
+                        } else { 
+                            System.out.println(c.getName() + " doesn't find food.");
+                        }
+                    }
+
                     if (c.isAlive()) {
                         LifeForm offspring = c.reproduce();
                         if (offspring != null) {
+                            c.changeHunger(-5);
                             newCreatures.add(offspring);
                         }
                     }

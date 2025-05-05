@@ -17,12 +17,13 @@ public abstract class Creature implements LifeForm {
     // Tracks whether the creature is alive
     protected boolean alive;
 
-
+    // Tracks the creature's hunger
+    protected int hunger;
     
     // Returns the chance of dying
-    public void die() {
+    public void die(String deathMessage) {
         alive = false;
-        System.out.println(name + " has died.");
+        System.out.println(name + " has died of " + deathMessage + ".");
     }
 
     // Returns true if the creature is alive
@@ -31,19 +32,19 @@ public abstract class Creature implements LifeForm {
     }
 
     // Simulates the chance of dying
-    public void maybeDie() {
+    public void maybeDie(String deathMessage) {
         if (Math.random() < chanceToDie) {
-            die();
+            die(deathMessage);
         }
     }
 
-
     // Constructor to initialize a creature with a name, chance to die, and chance to reproduce
-    public Creature(String name, double chanceToDie, double chanceToReproduce) {
+    public Creature(String name, double chanceToDie, double chanceToReproduce, int hunger) {
         this.name = name;
         this.chanceToDie = chanceToDie;
         this.chanceToReproduce = chanceToReproduce;
         this.alive = true;
+        this.hunger = hunger;
     }
 
 
@@ -52,11 +53,17 @@ public abstract class Creature implements LifeForm {
         return name;
     }
 
-
     // Returns the chance of reproducing
     public abstract LifeForm reproduce();
-        
 
+    // Returns the value of hunger
+    public int getHunger(){
+        return hunger;
+    }
 
+    // Changes the value of hunger
+    public void changeHunger(int change){
+        hunger += change;
+    }
     
 }
